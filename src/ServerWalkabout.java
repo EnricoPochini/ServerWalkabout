@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalTime;
 
 public class ServerWalkabout {
 
@@ -11,6 +12,11 @@ public class ServerWalkabout {
 
     //payload
     private static StringBuilder info;
+
+    //tempi di riavvio
+    private static final int oraSpegnimentoPomeriggio = 14;
+    private static final int oraSpegnimentoNotte = 0;
+    private static boolean rebooted;
 
 
     public static void main(String[] args) {
@@ -27,6 +33,41 @@ public class ServerWalkabout {
 
         InviaDatiCucina cucinaThread = new InviaDatiCucina();
         cucinaThread.start();
+
+
+
+        //reset dati
+        int oraCorrente;
+        while(true){
+
+            oraCorrente = LocalTime.now().getHour();
+
+
+            //reset
+            if(oraCorrente == oraSpegnimentoPomeriggio || oraCorrente == oraSpegnimentoNotte){
+
+                info = new StringBuilder();
+                rebooted = true;
+
+            }//if
+            else{
+                rebooted = false;
+            }//else
+
+
+            //sleep
+            try{
+
+                Thread.sleep(1000);
+
+            }catch(InterruptedException ignored){
+
+
+            }
+
+        }//while
+
+
 
 
     }
@@ -133,12 +174,15 @@ public class ServerWalkabout {
                 try(ServerSocket server = new ServerSocket(PORTA_INFO_GUIDE);
                     Socket clientSocket = server.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    ){
+                ){
 
 
                     //salvare le info ricevute
                     String infoGruppo = in.readLine();
+                    System.out.println(infoGruppo);
                     info.append("").append(infoGruppo);
+
+
 
 
                 }catch(IOException ignored){
@@ -151,6 +195,8 @@ public class ServerWalkabout {
 
 
         }
+
+
 
 
     }
