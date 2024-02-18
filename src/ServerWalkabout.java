@@ -44,15 +44,19 @@ public class ServerWalkabout {
 
 
             //reset
-            if(oraCorrente == oraSpegnimentoPomeriggio || oraCorrente == oraSpegnimentoNotte){
+            if((oraCorrente == oraSpegnimentoPomeriggio || oraCorrente == oraSpegnimentoNotte) && !rebooted){
 
                 info = new StringBuilder();
                 rebooted = true;
 
             }//if
-            else{
+
+
+            if((oraCorrente != oraSpegnimentoPomeriggio || oraCorrente != oraSpegnimentoNotte) && rebooted){
+
                 rebooted = false;
-            }//else
+
+            }//if
 
 
             //sleep
